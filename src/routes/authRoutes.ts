@@ -1,12 +1,12 @@
 import { Router } from 'express';
-import { getUsers } from '../controllers/userController';
+import {login, register} from '../controllers/authController';
 
 const router = Router()
 
 // Route for signing in a user
 router.post('/login', login);
 // Route for signing up a new user
-router.post.apply('/register', register);
+router.post('/register', register);
 
 // Route to get all users (requires admin permission)
 //router.get("/user", requireSignin, checkAdmin, getAllUser);
