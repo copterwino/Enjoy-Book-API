@@ -6,6 +6,17 @@ export enum BookType{
     CHAT = "chat"
 }
 
+export enum BookStatus{
+    PUBLISH = "publish",
+    PRIVATE = "private",
+    DELETE = "delete",
+}
+
+export enum BookEndState{
+    NOT_END = "not_end",
+    END = "end",
+}
+
 interface BookAttributes{
     id: number,
     book_id: string,
@@ -14,6 +25,8 @@ interface BookAttributes{
     title: string,
     intro: string,
     description: string,
+    status: BookStatus,
+    end_state: BookEndState
     createdAt?: Date,
     updatedAt?: Date
 }
@@ -33,6 +46,8 @@ implements BookAttributes
     declare title: string ;
     declare intro: string ;
     declare description : string ;
+    declare status: BookStatus;
+    declare end_state: BookEndState;
     declare createdAt?: Date ;
     declare updatedAt?: Date ;
 }
@@ -70,6 +85,17 @@ Book.init(
             type: DataTypes.TEXT,
             allowNull:false
         },
+        status: {
+            type: DataTypes.ENUM(...Object.values(BookStatus)),
+            allowNull: false,
+            defaultValue: BookStatus.PUBLISH,
+        },
+        end_state:{
+            type: DataTypes.ENUM(...Object.values(BookEndState)),
+            allowNull: false,
+            defaultValue: BookEndState.NOT_END,            
+        }
+        ,
         createdAt: {
             type: DataTypes.DATE,
             defaultValue: DataTypes.NOW

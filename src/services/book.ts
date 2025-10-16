@@ -1,5 +1,5 @@
 import { where } from "sequelize";
-import Book from "../models/book"
+import Book from "../models/book";
 
 export const getAllBooks = async (): Promise<Book[]> =>{
     try{

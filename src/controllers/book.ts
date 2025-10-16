@@ -14,14 +14,16 @@ export  const getBooks = async (req: Request, res: Response) => {
 
 export const addBook = async (req: Request, res: Response) => {
     try{
-        const {book_id, type, img, title, intro, description} = req.body;
+        const {book_id, type, img, title, intro, description, status, end_state} = req.body;
         const newBook = await Book.create({
             book_id: book_id,
             type: type,
             img: img,
             title: title,
             intro: intro,
-            description: description
+            description: description,
+            status: status,
+            end_state: end_state
         })
         return res.json(({
             message: "Add book sucess",
