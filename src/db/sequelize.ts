@@ -12,13 +12,10 @@ const sequelize = new Sequelize(
     port: Number(process.env.DB_PORT),
     dialect: process.env.DB_DIALECT as any,
     timezone: process.env.DB_TIMEZONE,
-    // dialectOptions: {
-    //   useUTC: false,
-    // },
     logging: false
   }
 );
 
-console.log(sequelize.config)
+//console.log(sequelize.config)
 
 export default sequelize;

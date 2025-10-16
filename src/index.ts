@@ -4,8 +4,6 @@ import sequelize from './db/sequelize';
 import http from "http";
 import { Server } from "socket.io"
 
-
-
 const httpServer = http.createServer(app);
 export const io = new Server(httpServer)
 
