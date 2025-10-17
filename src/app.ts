@@ -3,6 +3,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/authen"
 import book from "./routes/book"
+import category from "./routes/category"
 
 import { logger } from './middlewares/logger';
 
@@ -15,8 +16,9 @@ app.use(express.json());
 
 // Use authentication routes
 app.use("/api/user", authRoutes);
-app.use("/api/book",book);
-app.use(logger);
+app.use("/api/book", book);
+app.use("/api/category", category);
+//app.use(logger);
 
 
 app.get('/', (req: Request, res: Response)  => {

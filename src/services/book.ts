@@ -1,20 +1,48 @@
 //import { where } from "sequelize";
-import { stat } from "fs";
+//import { stat } from "fs";
 import Book, { BookType, BookEndState, BookRecommended, BookStatus } from "../models/book"
 
-export const getAllBooks = async (): Promise<Book[]> =>{
+//ประกาศ Type สำหรับผลลัพธ์ของ Service
+interface BookResult{
+    success: boolean;
+    message: string;
+    data?:{
+        id?: number;
+        title?: string;
+        books?: Book[];
+        book?: Book | null;
+    },
+
+
+}
+   
+
+export const getAllBooksService = async (): Promise<BookResult> =>{
     try{
         const books = await Book.findAll();
-        return books;
+        if(!books){
+            return {
+                success: false,
+                message: "ไม่พบข้อมูลหนังสือ",
+            };
+        }
+        return {
+            success: true,
+            message: "ดึงข้อมูลหนังสือสำเร็จ",
+            data: {
+                books: books
+            }
+        }
+        
     }catch(error: any){
-        console.error("Error fetching books", error);
-        throw  new Error('Failed to fetch books from database');
+        return{
+            success: false,
+            message: "ไม่สามารถดึงข้อมูลได้"
+        }
     }
 }
 
-//book_id, type, img, title, intro, description, status, end_state
-
-export const addNewBook = async (
+export const addNewBookService = async (
     book_id: string,
     type: BookType,
     category: number,
@@ -29,11 +57,17 @@ export const addNewBook = async (
     status?: BookStatus,
     end_state?: BookEndState,
     view? : number
-) =>{
+): Promise<BookResult> =>{
     const existingBook = await Book.findOne({
         where : {book_id}
     });
-    if(existingBook) throw new Error("หนังสือเล่มนี้มีข้อมูลอยู่แล้ว")
+
+    if(existingBook){
+        return{
+            success: false,
+            message: "หนังสือเล่มนี้มีข้อมูลอยู่แล้ว"
+        }
+    }
 
     const newBook = await Book.create({
         book_id: book_id,
@@ -51,15 +85,34 @@ export const addNewBook = async (
         end_state: end_state || BookEndState.NOT_END,
         view: view
     });
+
     return {
-        message: "Add book sucess",
-        book: {
+        success: true,
+        message: "เพิ่มหนังสือสำเร็จ",
+        data: {
             id: newBook.id,
             title: newBook.title
         }
     }
 }
 
+export const getBookByIdService = async(book_id: string): Promise<BookResult> => {
+    const book = await Book.findOne( {where: {book_id}} )
+
+    if(!book){
+        return{
+            success: false,
+            message: "ไม่พบหนังสือที่ต้องการ"
+        }
+    }
+    return {
+        success: true,
+        message: "ค้นหาหนังสือสำเร็จ",
+        data: {
+            book: book
+        }
+    }
+}
 
 
 

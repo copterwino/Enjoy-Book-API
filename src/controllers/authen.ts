@@ -1,50 +1,86 @@
 import {Request, Response} from 'express';
 import {loginService, registerService} from "../services/authen"
-// import bcrypt from "bcryptjs";
-// import jwt from "jsonwebtoken"
-// import User from "../models/user"
+import { stat } from 'fs';
 
-//const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret";
-
-export const login = async (req: Request, res: Response) =>{
+// LOGIN CONTROLLER
+export const login = async (req: Request, res: Response): Promise<Response> =>{
     try{
+        
         const {email, user_pwd} = req.body;
-        //console.log(req.body);
 
         if (!email || !user_pwd){
-            return res
-            .status(400)
-            .json({ message: "กรุณากรอกข้อมูลให้ครบถ้วน"})
+            return res.status(400).json({ 
+                code: 400,
+                status: "error",
+                message: "กรุณากรอกข้อมูลให้ครบถ้วน"
+            });
         }
 
         //หา User
         const result = await loginService(email, user_pwd);
-        return res.json(result);
+
+        if(!result.success){
+            return res.status(401).json({
+                code: 401,
+                status: "error",
+                message: result.message
+            });
+        }
+
+        return res.status(200).json({
+            code: 200,
+            status: "success",
+            message: result.message,
+            data: result.data
+        });
+
     }catch(error:any){
-        console.error(error);
-        return res.status(500)
-        .json({message: error?.message||"Server error"});
+        console.error("Error in login controller", error);
+        return res.status(500).json({
+            code: 500,
+            status: "error",
+            message: error?.message || "Server error"
+        });
     }
 };
 
-export const register = async (req: Request, res: Response) =>{
+//REGISTER CONTROLLER
+export const register = async (req: Request, res: Response): Promise<Response> =>{
     try{
         const { email, fullname, user_pwd, role} = req.body;
+
         if(!email || !fullname || !user_pwd){
-            return res.status(400).json(
-                {
+            return res.status(400).json({
+                    code: 400,
+                    status: "error",
                     message: "กรุณากรอกข้อมูลให้ครบถ้วน"
-                }
-            );
+                });
         }
         
         const result = await registerService(email, fullname, user_pwd, role);
-        return res.json(result);
+        
+        if(!result.success){
+            return res.status(409).json({
+                code: 409,
+                status: "error",
+                message: result.message
+            })
+        }
 
-    }catch(error:any){
-        console.error(error);
-        return res.status(500)
-        .json({message: error?.message || "Server error" });
+        return res.status(201).json(
+            {
+                code: 201,
+                status: "sucess",
+                message: result.message,
+                data: result.data
+            });
+    }catch(error: any){
+        console.error("Error in register controller", error);
+        return res.status(500).json({
+            code: 500,
+            status: "error",
+            message: error?.message || "Server error" 
+        });
     }
 }
 
