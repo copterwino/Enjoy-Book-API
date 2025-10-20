@@ -4,39 +4,35 @@ import Book, { BookType, BookEndState, BookRecommended, BookStatus } from "../mo
 
 //ประกาศ Type สำหรับผลลัพธ์ของ Service
 interface BookResult{
-    code: number;
     success: boolean;
+    code: number;
+    status: string;
     message: string;
     data?: Book[] | { id?: number; title?: string; }
 }
-   
 
+//เรียกดูข้อมูลหนังสือทั้งหมด
 export const getAllBooksService = async (): Promise<BookResult> =>{
-    try{
-        const books = await Book.findAll();
-        if(!books){
-            return {
-                code: 401,
-                success: false,
-                message: "ไม่พบข้อมูลหนังสือ",
-            };
-        }
+    const books = await Book.findAll();
+    if(!books){
         return {
-            code: 200,
-            success: true,
-            message: "ดึงข้อมูลหนังสือสำเร็จ",
-            data: books
-        }
-        
-    }catch(error: any){
-        return{
-            code: 500,
             success: false,
-            message: "ไม่สามารถดึงข้อมูลได้"
-        }
+            code: 401,
+            status: "error",
+            message: "ไม่พบข้อมูลหนังสือ",
+        };
     }
+    return {
+        success: true,
+        code: 200,
+        status: "success",
+        message: "ดึงข้อมูลหนังสือสำเร็จ",
+        data: books
+    }
+
 }
 
+//เพิ่มหนังสือใหม่
 export const addNewBookService = async (
     book_id: string,
     type: BookType,
@@ -53,91 +49,67 @@ export const addNewBookService = async (
     end_state?: BookEndState,
     view? : number
 ): Promise<BookResult> =>{
-    try{
-        const existingBook = await Book.findOne({
-            where : {book_id}
-        });
-        if(existingBook){
-            return{
-                code: 409,
-                success: false,
-                message: "หนังสือเล่มนี้มีข้อมูลอยู่แล้ว"
-            }
-        }
 
-        const newBook = await Book.create({
-            book_id: book_id,
-            type: type,
-            category: category,
-            sub_category: sub_category,
-            img: img,
-            by: by,
-            title: title,
-            intro: intro,
-            description: description,
-            tag: tag,
-            recommended: recommended,
-            status: status || BookStatus.PRIVATE,
-            end_state: end_state || BookEndState.NOT_END,
-            view: view
-        });
-
-        return {
-            code: 200,
-            success: true,
-            message: "เพิ่มหนังสือสำเร็จ",
-            data: {
-                id: newBook.id,
-                title: newBook.title
-            }
-        }
-    }catch(error){
-        return {
-            code: 500,
+    const existingBook = await Book.findOne({
+        where : {book_id}
+    });
+    if(existingBook){
+        return{
             success: false,
-            message: "เพิ่มหนังสือไม่สำเร็จ"
+            code: 409,
+            status: "error",
+            message: "หนังสือเล่มนี้มีข้อมูลอยู่แล้ว"
         }
     }
+
+    const newBook = await Book.create({
+        book_id: book_id,
+        type: type,
+        category: category,
+        sub_category: sub_category,
+        img: img,
+        by: by,
+        title: title,
+        intro: intro,
+        description: description,
+        tag: tag,
+        recommended: recommended,
+        status: status || BookStatus.PRIVATE,
+        end_state: end_state || BookEndState.NOT_END,
+        view: view
+    });
+
+    return {
+        success: true,
+        code: 200,
+        status: "success",
+        message: "เพิ่มหนังสือสำเร็จ",
+        data: {
+            id: newBook.id,
+            title: newBook.title
+        }
+    }
+
 }
 
+//หาข้อมูลหนังสือจากไอดี
 export const getBookByIdService = async(book_id: string): Promise<BookResult> => {
+
     const book = await Book.findOne( {where: {book_id}} )
-    //console.log(book);
+
     if(!book){
         return{
-            code: 401,
             success: false,
+            code: 401,
+            status: "error",
             message: "ไม่พบหนังสือที่ต้องการ"
         }
     }
     return {
-        code: 200,
         success: true,
+        code: 200,
+        status: "success",
         message: "ค้นหาหนังสือสำเร็จ",
         data: book
     }
 }
-
-
-
-// router.get("/" , async (_req, res) => {
-//   try {
-//     const books = await Book.findAll();
-//     res.status(200).json(formatBooks(books)); // ส่งข้อมูลกลับ
-//   } catch (error: any) {
-//     console.error("Error fetching books:", error);
-//     res.status(500).json({ message: "Failed to fetch books" });
-//   }
-// });
-
-// id: number,
-// book_id: string,
-// type: string,
-// img: string,
-// title: string,
-// intro: string,
-// description: string,
-// status: BookStatus,
-// end_state: BookEndState
-// createdAt?: Date,
-// updatedAt?: Date

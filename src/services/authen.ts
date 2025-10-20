@@ -8,7 +8,8 @@ const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret";
 //ประกาศ Type สำหรับผลลัพธ์ของ Service
 interface AuthResult{
     success: boolean;
-    //code: number;
+    code: number;
+    status: string;
     message: string;
     data?:{
         id: number;
@@ -28,9 +29,11 @@ export const registerService = async (
 ): Promise<AuthResult> => {
     const existingEmail = await User.findOne({ where : {email} });
 
-    if (existingEmail){
+    if(existingEmail){
         return {
             success: false,
+            code: 409,
+            status: "error",
             message: "อีเมลนี้ถูกใช้งานไปแล้ว"
         };
     };
@@ -46,6 +49,8 @@ export const registerService = async (
 
     return {
         success: true,
+        code: 201,
+        status: "success",
         message: "สมัครสมาชิกสำเร็จ",
         data: {
             id: newUser.id,
@@ -65,6 +70,8 @@ export const loginService = async (
     if(!user){
         return {
             success: false,
+            code: 401,
+            status: "error",
             message: "ไม่พบผู้ใช้งานนี้ในระบบ"
         }
     }
@@ -74,6 +81,8 @@ export const loginService = async (
     if(!isPasswordValid){
         return {
             success: false,
+            code: 401,
+            status: "error",
             message: "ชื่อผู้ใช้หรือรหัสผ่านผิด"
         };
     }
@@ -91,6 +100,8 @@ export const loginService = async (
 
     return{
         success: true,
+        code: 200,
+        status: "success",
         message: "เข้าสู่ระบบสำเร็จ",
         data: {
             id: user.id,

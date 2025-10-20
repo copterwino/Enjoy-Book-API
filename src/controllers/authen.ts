@@ -20,16 +20,16 @@ export const login = async (req: Request, res: Response): Promise<Response> =>{
         const result = await loginService(email, user_pwd);
 
         if(!result.success){
-            return res.status(401).json({
-                code: 401,
-                status: "error",
+            return res.status(result.code).json({
+                code: result.code,
+                status: result.status,
                 message: result.message
             });
         }
 
-        return res.status(200).json({
-            code: 200,
-            status: "success",
+        return res.status(result.code).json({
+            code: result.code,
+            status: result.success,
             message: result.message,
             data: result.data
         });
@@ -60,17 +60,17 @@ export const register = async (req: Request, res: Response): Promise<Response> =
         const result = await registerService(email, fullname, user_pwd, role);
         
         if(!result.success){
-            return res.status(409).json({
-                code: 409,
-                status: "error",
+            return res.status(result.code).json({
+                code: result.code,
+                status: result.status,
                 message: result.message
             })
         }
 
-        return res.status(201).json(
+        return res.status(result.code).json(
             {
-                code: 201,
-                status: "sucess",
+                code: result.code,
+                status: result.status,
                 message: result.message,
                 data: result.data
             });

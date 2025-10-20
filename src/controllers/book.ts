@@ -1,8 +1,5 @@
 import { Request, Response} from 'express';
 import { getAllBooksService, addNewBookService, getBookByIdService } from '../services/book';
-import { sendResponse } from '../utils/response';
-
-// 🧩 ฟังก์ชันช่วยสร้าง response (เพื่อลดการเขียนซ้ำ)
 
 
 export  const getBooks = async (req: Request, res: Response) => {
@@ -13,14 +10,14 @@ export  const getBooks = async (req: Request, res: Response) => {
         if(!result.success){
             return res.status(result.code).json({
                 code: result.code,
-                status: "error",
+                status: result.status,
                 message: result.message
             })
         }
 
         return res.status(result.code).json({
             code: result.code,
-            status: "success",
+            status: result.status,
             message: result.message,
             data: result.data
         });
@@ -53,16 +50,16 @@ export const addBook = async (req: Request, res: Response) => {
         if(!result.success){
             return res.status(result.code).json({
                 code: result.code,
-                status: "error",
+                status: result.status,
                 message: result.message,
             })
         }
 
         return res.status(200).json({
             code: result.code,
-            status: "success",
+            status: result.status,
             message: result.message,
-            data: result
+            data: result.data
         });
 
     }catch(error){
@@ -85,15 +82,15 @@ export const getBookById = async(req: Request, res: Response) => {
         if(!result.success){
             return res.status(result.code).json({
                 code: result.code,
-                status: "error",
+                status: result.status,
                 message: result.message
             });
         }
 
         return res.status(200).json({
             code: 200,
-            status: "success",
-            message: "ค้นหาหนังสือสำเร็จ",
+            status: result.status,
+            message: result.message,
             data: result.data
         });
     }catch(error){
@@ -101,20 +98,7 @@ export const getBookById = async(req: Request, res: Response) => {
         return res.status(500).json({
             code: 500,
             status: "error",
-            message: "ค้นหาหนังสือไม่สำเร็จ"
+            message: "ไม่สามารถค้นหาหนังสือได้"
         })
     }
 }
-
-//Format แบบนี้ **
-// {
-//     "code": 200,
-//     "status": "success",
-//     "message": "ดึงคอมเมนท์สำเร็จ",
-//     "data": {
-//         "page": 1,
-//         "limit": 20,
-//         "total": 1,
-//         "totalPages": 1
-//     }
-// }
