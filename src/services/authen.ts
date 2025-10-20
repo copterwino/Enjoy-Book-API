@@ -8,6 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "fallback_secret";
 //ประกาศ Type สำหรับผลลัพธ์ของ Service
 interface AuthResult{
     success: boolean;
+    //code: number;
     message: string;
     data?:{
         id: number;
