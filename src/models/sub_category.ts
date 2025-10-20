@@ -5,7 +5,6 @@ export interface SubCategoryAttributes {
     id: number;
     category_id: number;
     name: string;
-
 }
 
 export type SubCategoryCreationAttributes = Optional<SubCategoryAttributes, "id" >;
@@ -24,7 +23,8 @@ SubCategory.init(
       primaryKey: true,
     },
     category_id: {
-        type: DataTypes.TINYINT,
+        type: DataTypes.INTEGER,
+        allowNull: false,
     },
     name: {
       type: DataTypes.STRING(255),
@@ -34,14 +34,12 @@ SubCategory.init(
   },
   {
     sequelize: sequelizeDB,
-    tableName: "sub_category",
+    tableName: "sub_categories",
     timestamps: false,
   }
 );
 
 SubCategory.sync({
-  force: false,
-  alter:  true
-});
-
+  force: true,
+})
 export default SubCategory;

@@ -29,7 +29,6 @@ export const getAllBooksService = async (): Promise<BookResult> =>{
         message: "ดึงข้อมูลหนังสือสำเร็จ",
         data: books
     }
-
 }
 
 //เพิ่มหนังสือใหม่
@@ -53,6 +52,7 @@ export const addNewBookService = async (
     const existingBook = await Book.findOne({
         where : {book_id}
     });
+
     if(existingBook){
         return{
             success: false,
@@ -94,22 +94,25 @@ export const addNewBookService = async (
 
 //หาข้อมูลหนังสือจากไอดี
 export const getBookByIdService = async(book_id: string): Promise<BookResult> => {
+    try{
+        const book = await Book.findOne( {where: {book_id}} )
 
-    const book = await Book.findOne( {where: {book_id}} )
-
-    if(!book){
-        return{
-            success: false,
-            code: 401,
-            status: "error",
-            message: "ไม่พบหนังสือที่ต้องการ"
+        if(!book){
+            return{
+                success: false,
+                code: 401,
+                status: "error",
+                message: "ไม่พบหนังสือที่ต้องการ"
+            }
         }
-    }
-    return {
-        success: true,
-        code: 200,
-        status: "success",
-        message: "ค้นหาหนังสือสำเร็จ",
-        data: book
+        return {
+            success: true,
+            code: 200,
+            status: "success",
+            message: "ค้นหาหนังสือสำเร็จ",
+            data: book
+        }
+    }catch{
+        throw new Error('Failed to fetch book from database')
     }
 }

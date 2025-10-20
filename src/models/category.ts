@@ -29,7 +29,7 @@ Category.init(
   },
   {
     sequelize: sequelizeDB,
-    tableName: "category",
+    tableName: "categories",
     timestamps: false,
   }
 );
