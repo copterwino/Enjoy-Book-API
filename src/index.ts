@@ -1,6 +1,6 @@
 import app from './app'
 
-import sequelize from './db/sequelize';
+import sequelize from './db/sequelize.db';
 import http from "http";
 import { Server } from "socket.io"
 

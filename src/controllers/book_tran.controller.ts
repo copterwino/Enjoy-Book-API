@@ -1,5 +1,5 @@
 import { Request, Response} from 'express';
-import { getAllBooksService, addNewBookService, getBookByIdService } from '../services/book';
+import { getAllBooksService, addNewBookService, getBookByIdService } from '../services/book_tran.service';
 
 
 export  const getBooks = async (req: Request, res: Response) => {
@@ -33,9 +33,19 @@ export  const getBooks = async (req: Request, res: Response) => {
 
 export const addBook = async (req: Request, res: Response) => {
     try{
-        const {book_id, type, img, title, by, intro, description, status, end_state} = req.body;
+        const bookData = req.body;
+
+        const requiredFields = [
+            'bookID', 'type','img','name', 'title', 'tag',
+            'cat1','cat2','rate','des','user_id','status',
+            'end','noti_add','user_freecoin','fast_status'
+        ];
+        //console.log(bookData)
         //ดักError กรุณากรอกข้อมูลให้ครบ
-        if(!book_id || !type || !img || !title || !intro || !description){
+        // ตรวจหาช่องที่ขาด
+        const missingFields = requiredFields.filter(field => !bookData[field]);
+        //console.log('Missing fields:', missingFields);
+        if(missingFields.length > 0){
             return res.status(400).json(
                 {
                     code: 400,
@@ -45,7 +55,7 @@ export const addBook = async (req: Request, res: Response) => {
             );  
         }
 
-        const result = await addNewBookService(book_id, type, img, by, title, intro, description, status, end_state);
+        const result = await addNewBookService(bookData);
 
         if(!result.success){
             return res.status(result.code).json({
@@ -102,3 +112,38 @@ export const getBookById = async(req: Request, res: Response) => {
         })
     }
 }
+
+
+// !bookID ||
+// !type ||
+// !img ||
+// !name ||
+// !title ||
+// !tag ||
+// !cat1 ||
+// !cat2 ||
+// !rate ||
+// !des ||
+// !user_id ||
+// !status ||
+// !bgimg ||
+// !end ||
+// !use_freecoi ||
+// !fast_status  ||
+
+// bookID, 
+// type,
+// img,
+// name, 
+// title, 
+// tag,
+// cat1,
+// cat2,
+// rate,
+// des,
+// user_id,
+// status,
+// bgimg,
+// end,
+// use_freecoin,
+// fast_status

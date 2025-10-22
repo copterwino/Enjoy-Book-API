@@ -1,5 +1,5 @@
-import Category  from "../models/category"
-import SubCategory from "../models/sub_category";
+import Category  from "../models/category.model"
+import SubCategory from "../models/sub_category.model";
 
 //ประกาศ Type สำหรับผลลัพธ์ของ Service
 interface CategoryResult{

@@ -1,6 +1,9 @@
 import {Request, Response} from 'express';
-import {loginService, registerService} from "../services/authen"
-import { stat } from 'fs';
+import {loginService, registerService} from "../services/authen.service"
+import { refreshTokenService } from '../services/authen.service';
+
+
+//import { stat } from 'fs';
 
 // LOGIN CONTROLLER
 export const login = async (req: Request, res: Response): Promise<Response> =>{
@@ -83,4 +86,32 @@ export const register = async (req: Request, res: Response): Promise<Response> =
         });
     }
 }
+
+export const refresh = async (req: Request, res: Response): Promise<Response> =>{
+    try{
+        const { refreshToken } = req.body;
+        const result = await refreshTokenService(refreshToken);
+        if(!result.success){
+            return res.status(result.code).json({ 
+                code: result.code,
+                status: result.status,
+                message: result.message 
+            });
+        }
+
+        return res.status(result.code).json({
+            code: result.code,
+            status: result.status,
+            message: result.message,
+            data: result.data
+        });
+    }catch(error:any){
+        console.error('Error in refresh controller', error);
+        return res.status(500).json({
+            code: 500,
+            status: 'error',
+            message: error?.message || 'Server error'
+        });
+    }
+};
 

@@ -1,11 +1,12 @@
 import express, {Application ,Router, Request, Response} from 'express';
 import cors from "cors";
 
-import authRoutes from "./routes/authen"
-import book from "./routes/book"
-import category from "./routes/category"
+import authRoutes from "./routes/authen.route"
+import book_tran from "./routes/book_tran.route"
+import category from "./routes/category.route"
+import book_group from "./routes/book_group.route"
 
-import { logger } from './middlewares/logger';
+//import { logger } from './middlewares/logger';
 
 
 const app : Application = express();
@@ -16,8 +17,11 @@ app.use(express.json());
 
 // Use authentication routes
 app.use("/api/user", authRoutes);
-app.use("/api/book", book);
+app.use("/api/book", book_tran);
 app.use("/api/category", category);
+app.use("/api/bookGroup", book_group);
+
+// Use logger middleware
 //app.use(logger);
 
 

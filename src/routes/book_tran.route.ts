@@ -1,6 +1,7 @@
 import { Router, Request, Response } from "express";
 
-import { getBooks, addBook, getBookById} from "../controllers/book";
+import { getBooks, addBook, getBookById} from "../controllers/book_tran.controller";
+import { verifyToken } from "../middlewares/authen.middleware";
 
 //import { getBookByIdService } from "../services/book";
 //import Book from "../models/book"
@@ -9,7 +10,7 @@ const router = Router();
 
 router.get('/getBooks', getBooks);
 
-router.post('/addBook', addBook);
+router.post('/addBook', verifyToken, addBook);
 
 router.get('/:book_id', getBookById);
 

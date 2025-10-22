@@ -1,5 +1,5 @@
 import { DataTypes, Model, Optional} from "sequelize";
-import sequelizeDB from "../db/sequelize";
+import sequelizeDB from "../db/sequelize.db";
 //import { userInfo } from "os";
 
 export enum RoleStatus{
@@ -9,7 +9,7 @@ export enum RoleStatus{
 }
 
 interface UserAttributes{
-    id: number;
+    user_id: number;
     email: string;
     user_pwd: string;
     fullname: string;
@@ -19,11 +19,11 @@ interface UserAttributes{
 }
 
 //ตอนสร้าง record ใหม่ไม่ต้องใส่ id เพราะระบบจะ auto-increment ให้เอง
-interface UserCreationAttributes extends Optional<UserAttributes, "id">{}
+interface UserCreationAttributes extends Optional<UserAttributes, "user_id">{}
 
 //ใช้ UserAttributes เป็น type ของข้อมูลใน modelและ UserCreationAttributes เป็น type สำหรับตอนสร้างข้อมูลใหม่
 class User extends Model<UserAttributes, UserCreationAttributes> implements UserAttributes{
-    declare id: number;
+    declare user_id: number;
     declare email: string;
     declare user_pwd: string
     declare fullname: string;
@@ -34,7 +34,7 @@ class User extends Model<UserAttributes, UserCreationAttributes> implements User
 
 User.init(
     {
-        id: {
+        user_id: {
             type: DataTypes.INTEGER, 
             autoIncrement:true, 
             primaryKey: true
@@ -67,7 +67,7 @@ User.init(
     },
     {
         sequelize: sequelizeDB,
-        tableName: "users",
+        tableName: "users_old",
         timestamps: true
     }
 );
